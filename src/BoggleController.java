@@ -16,15 +16,18 @@ public class BoggleController {
 
     private List<String> diceWords;
 
-    private static String allWordsFilename = "OpenEnglishWordList.txt";
-    private static String diceWordsFilename = "DiceWords.txt";
+    private DiceGenerate diceGenerate;
+
+    private static String allWordsFilename = "resources/AllWords.txt";
+    private static String diceWordsFilename = "resources/DiceWords.txt";
 
     public BoggleController(BoggleView view,BoggleModel model) {
         this.model = model;
         this.view = view;
 
         allWords = ReadDataUtils.readData(allWordsFilename);
-
+        diceWords = ReadDataUtils.readData(diceWordsFilename);
+        diceGenerate = new DiceGenerate(diceWords);
         initListener();
     }
 
@@ -42,6 +45,15 @@ public class BoggleController {
                 if(!allWords.contains(text.toUpperCase())){
                     view.showTip();
                 }
+            }
+        });
+
+        view.addResetGameButtonHandler(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                List<String> gridList = diceGenerate.shakeDice();
+                view.setGridDiceValue(gridList);
+                view.init();
             }
         });
     }

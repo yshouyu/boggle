@@ -3,12 +3,15 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
+import java.util.List;
 
 
 /**
@@ -163,6 +166,10 @@ public class BoggleView {
         submitButton.setOnAction(handler);
     }
 
+    public void addResetGameButtonHandler(EventHandler<ActionEvent> handler){
+        resetGameButton.setOnAction(handler);
+    }
+
     public void appendTextToTextArea(String text){
         textArea.appendText(text + "\n");
     }
@@ -172,12 +179,62 @@ public class BoggleView {
         return currentWordTextField.getText();
     }
 
+    /**
+     * show tip
+     */
     public void showTip(){
         tipLabel.setVisible(true);
     }
 
+    /**
+     * hide tip
+     */
     public void hideTip(){
         tipLabel.setVisible(false);
     }
 
+    /**
+     * Reset Score
+     * @param score the value
+     */
+    public void setScore(int score){
+        scoreLabel.setText(String.valueOf(score));
+    }
+
+    /**
+     * Reset time
+     * @param time the value of time
+     */
+    public void setTime(String time){
+        timerLabel.setText(time);
+    }
+
+    /**
+     * set dice pane value
+     * @param gridList the list of grid
+     */
+    public void setGridDiceValue(List<String> gridList){
+        int index = 0;
+        for(Node node : dicePane.getChildren()){
+            Button temp = (Button) node;
+            temp.setText(gridList.get(index++));
+        }
+    }
+
+    /**
+     * init this view
+     */
+    public void init() {
+        timerLabel.setText("3:00");
+        scoreLabel.setText("0");
+        currentWordTextField.setText("");
+    }
+
+    private class GameTimer implements Runnable{
+
+        @Override
+        public void run() {
+
+        }
+    }
 }

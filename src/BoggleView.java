@@ -1,5 +1,4 @@
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,8 +17,6 @@ import java.util.List;
  * class BoggleView
  */
 public class BoggleView {
-
-    private BoggleModel model;
 
     private BorderPane rootPane;
 
@@ -49,8 +46,7 @@ public class BoggleView {
 
     private Label scoreLabel;
 
-    public BoggleView(BoggleModel model) {
-        this.model = model;
+    public BoggleView() {
         initComponent();
     }
 
@@ -76,15 +72,15 @@ public class BoggleView {
         infoPane.setSpacing(20);
 
         HBox hBox1 = new HBox();
-        hBox1.setPadding(new Insets(10,20,10,20));
+        hBox1.setPadding(new Insets(10, 20, 10, 20));
         hBox1.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
         currentWordLabel = new Label("Current Word:");
         currentWordLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        currentWordLabel.setPrefSize(150,50);
+        currentWordLabel.setPrefSize(150, 50);
         currentWordTextField = new TextField();
-        currentWordTextField.setPrefSize(150,50);
+        currentWordTextField.setPrefSize(150, 50);
         currentWordTextField.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        hBox1.getChildren().addAll(currentWordLabel,currentWordTextField);
+        hBox1.getChildren().addAll(currentWordLabel, currentWordTextField);
 
         submitButton = new Button("Submit Word");
         submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
@@ -92,13 +88,13 @@ public class BoggleView {
         tipLabel = new Label("No this Word.");
         tipLabel.setTextFill(Color.RED);
         tipLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        tipLabel.setPrefSize(100,50);
+        tipLabel.setPrefSize(100, 50);
         tipLabel.setVisible(false);
 
         HBox hBox2 = new HBox();
         hBox2.setSpacing(10);
-        hBox2.setPadding(new Insets(10,20,10,20));
-        hBox2.getChildren().addAll(submitButton,tipLabel);
+        hBox2.setPadding(new Insets(10, 20, 10, 20));
+        hBox2.getChildren().addAll(submitButton, tipLabel);
 
 
         scoreLabel = new Label("score");
@@ -107,7 +103,7 @@ public class BoggleView {
         scoreLabel.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
         scoreLabel.setContentDisplay(ContentDisplay.CENTER);
 
-        infoPane.getChildren().addAll(hBox1,hBox2,scoreLabel);
+        infoPane.getChildren().addAll(hBox1, hBox2, scoreLabel);
 
     }
 
@@ -162,60 +158,78 @@ public class BoggleView {
         return new Scene(rootPane, 800, 600);
     }
 
-    public void addSubmitButtonHandler(EventHandler<ActionEvent> handler){
+    public void addSubmitButtonHandler(EventHandler<ActionEvent> handler) {
         submitButton.setOnAction(handler);
     }
 
-    public void addResetGameButtonHandler(EventHandler<ActionEvent> handler){
+    public void addResetGameButtonHandler(EventHandler<ActionEvent> handler) {
         resetGameButton.setOnAction(handler);
     }
 
-    public void appendTextToTextArea(String text){
+    public void addDiceGridHandler(EventHandler<ActionEvent> handler) {
+        for (int i = 0; i < GRID; i++) {
+            for (int j = 0; j < GRID; j++) {
+                diceGrid[i][j].setOnAction(handler);
+            }
+        }
+    }
+
+    public void appendTextToTextArea(String text) {
         textArea.appendText(text + "\n");
     }
 
-    public String getTextFieldString()
-    {
+    public String getTextFieldString() {
         return currentWordTextField.getText();
     }
 
     /**
      * show tip
      */
-    public void showTip(){
+    public void showTip() {
         tipLabel.setVisible(true);
     }
 
     /**
      * hide tip
      */
-    public void hideTip(){
+    public void hideTip() {
         tipLabel.setVisible(false);
     }
 
     /**
      * Reset Score
+     *
      * @param score the value
      */
-    public void setScore(int score){
+    public void setScore(int score) {
         scoreLabel.setText(String.valueOf(score));
     }
 
     /**
+     * append text
+     * @param text the value
+     */
+    public void appendToTextField(String text){
+        currentWordTextField.appendText(text);
+    }
+
+    /**
      * Reset time
+     *
      * @param time the value of time
      */
-    public void setTime(String time){
+    public void setTime(String time) {
         timerLabel.setText(time);
     }
 
     /**
      * set dice pane value
+     *
      * @param gridList the list of grid
      */
-    public void setGridDiceValue(List<String> gridList){
+    public void setGridDiceValue(List<String> gridList) {
         int index = 0;
-        for(Node node : dicePane.getChildren()){
+        for (Node node : dicePane.getChildren()) {
             Button temp = (Button) node;
             temp.setText(gridList.get(index++));
         }
@@ -228,13 +242,52 @@ public class BoggleView {
         timerLabel.setText("3:00");
         scoreLabel.setText("0");
         currentWordTextField.setText("");
+        currentWordTextField.setEditable(true);
+        submitButton.setDisable(false);
+        textArea.setText("");
+        setDicePaneAvaliable(true);
+        setDicePaneDisable(false);
     }
 
-    private class GameTimer implements Runnable{
+    /**
+     * stop game
+     */
+    public void stopGame() {
+        currentWordTextField.setEditable(false);
+        submitButton.setDisable(true);
+        setDicePaneDisable(true);
+    }
 
-        @Override
-        public void run() {
-
+    /**
+     *
+     * @param status
+     */
+    public void setDicePaneDisable(boolean status){
+        for (Node node : dicePane.getChildren()) {
+            Button temp = (Button) node;
+            temp.setDisable(status);
         }
+    }
+
+    /**
+     * Enable a button
+     * @param row
+     * @param column
+     */
+    public void enabledDiceGridButton(int row,int column){
+        if(diceGrid[row][column].isAvailable()){
+            diceGrid[row][column].setDisable(false);
+        }
+    }
+
+    public void setDicePaneAvaliable(boolean avaliable) {
+        for (Node node : dicePane.getChildren()) {
+            DiceButton temp = (DiceButton) node;
+            temp.setAvailable(avaliable);
+        }
+    }
+
+    public void setTextField(String text) {
+        currentWordTextField.setText("");
     }
 }

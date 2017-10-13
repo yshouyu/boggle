@@ -12,9 +12,9 @@ public class BoggleGUI extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        BoggleModel model = new BoggleModel();
-        BoggleView view = new BoggleView(model);
-        new BoggleController(view,model);
+
+        BoggleView view = new BoggleView();
+        new BoggleController(view);
 
         primaryStage.setScene(view.getScene());
         primaryStage.setTitle("Boggle Game");

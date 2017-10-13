@@ -1,7 +1,6 @@
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.layout.Background;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,29 +90,29 @@ public class BoggleController {
             }
         });
 
-//        view.addDiceGridHandler(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                if(gameRunning){
-//                    DiceButton button = (DiceButton) event.getSource();
-//                    view.appendToTextField(button.getText());
-//                    button.setAvailable(false);
-//                    view.setDicePaneDisable(true);
-//
-//                    int row = button.getRow();
-//                    int column = button.getColumn();
-//                    for (int i = row - 1; i <= row + 1; i++) {
-//                        if (i >= 0 && i < 4) {
-//                            for (int j = column - 1; j <= column + 1; j++) {
-//                                if (j >= 0 && j < 4) {
-//                                    view.enabledDiceGridButton(i,j);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        view.addDiceGridHandler(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(gameRunning){
+                    DiceButton button = (DiceButton) event.getSource();
+                    view.appendToTextField(button.getText());
+                    button.setAvailable(false);
+                    view.setDicePaneDisable(true);
+
+                    int row = button.getRow();
+                    int column = button.getColumn();
+                    for (int i = row - 1; i <= row + 1; i++) {
+                        if (i >= 0 && i < 4) {
+                            for (int j = column - 1; j <= column + 1; j++) {
+                                if (j >= 0 && j < 4) {
+                                    view.enabledDiceGridButton(i,j);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**

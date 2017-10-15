@@ -1,3 +1,4 @@
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,7 +25,7 @@ public class BoggleView {
 
     private DiceButton[][] diceGrid;
 
-    private static final int GRID = 4;
+    private int grid = 4;
 
     private Pane controlPane;
 
@@ -45,6 +46,8 @@ public class BoggleView {
     private Label tipLabel;
 
     private Label scoreLabel;
+
+    private ChoiceBox<String> stringChoiceBox;
 
     public BoggleView() {
         initComponent();
@@ -125,10 +128,15 @@ public class BoggleView {
         resetGameButton.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         resetGameButton.setPrefSize(200, 50);
 
+        stringChoiceBox = new ChoiceBox<String>();
+        stringChoiceBox.setItems(FXCollections.observableArrayList("4 * 4","5 * 5"));
+        stringChoiceBox.setValue("4 * 4");
+        stringChoiceBox.setPrefSize(200, 20);
+
         VBox vBox = new VBox();
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(20, 20, 20, 20));
-        vBox.getChildren().addAll(textArea, timerLabel, resetGameButton);
+        vBox.getChildren().addAll(textArea, timerLabel, resetGameButton,stringChoiceBox);
         controlPane.getChildren().add(vBox);
     }
 
@@ -139,18 +147,8 @@ public class BoggleView {
         dicePane.setPrefSize(400, 400);
         dicePane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.MEDIUM)));
         ;
-        diceGrid = new DiceButton[GRID][GRID];
-        for (int i = 0; i < GRID; i++) {
-            for (int j = 0; j < GRID; j++) {
-                diceGrid[i][j] = new DiceButton("");
-                diceGrid[i][j].setFont(Font.font("Arial", FontWeight.BOLD, 40));
-                diceGrid[i][j].setFocusTraversable(false);
-                diceGrid[i][j].setPrefSize(100, 100);
-                diceGrid[i][j].setRow(i);
-                diceGrid[i][j].setColumn(j);
-                dicePane.add(diceGrid[i][j], i, j);
-            }
-        }
+        diceGrid = new DiceButton[grid][grid];
+        initDiceGrid(4);
         dicePane.setPadding(new Insets(20, 20, 20, 20));
     }
 
@@ -167,8 +165,8 @@ public class BoggleView {
     }
 
     public void addDiceGridHandler(EventHandler<ActionEvent> handler) {
-        for (int i = 0; i < GRID; i++) {
-            for (int j = 0; j < GRID; j++) {
+        for (int i = 0; i < grid; i++) {
+            for (int j = 0; j < grid; j++) {
                 diceGrid[i][j].setOnAction(handler);
             }
         }
@@ -289,5 +287,28 @@ public class BoggleView {
 
     public void setTextField(String text) {
         currentWordTextField.setText("");
+    }
+
+    public String getChoichBoxValue(){
+        return stringChoiceBox.getValue();
+    }
+
+    public void initDiceGrid(int gridSide) {
+        dicePane.getChildren().clear();
+        diceGrid = new DiceButton[gridSide][gridSide];
+        grid = gridSide;
+        int side = gridSide == 5 ? 70:100;
+        int fontSize = gridSide == 5 ? 30 : 40;
+        for (int i = 0; i < gridSide; i++) {
+            for (int j = 0; j < gridSide; j++) {
+                diceGrid[i][j] = new DiceButton("");
+                diceGrid[i][j].setFont(Font.font("Arial", FontWeight.BOLD, fontSize));
+                diceGrid[i][j].setFocusTraversable(false);
+                diceGrid[i][j].setPrefSize(side, side);
+                diceGrid[i][j].setRow(i);
+                diceGrid[i][j].setColumn(j);
+                dicePane.add(diceGrid[i][j], i, j);
+            }
+        }
     }
 }

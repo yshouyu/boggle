@@ -20,7 +20,7 @@ public class BoggleController {
 
     private DiceGenerate diceGenerate;
 
-    private static String allWordsFilename = "resources/AllWords.txt";
+    private static String allWordsFilename = "resources/OpenEnglishWordList.txt";
     private static String diceWordsFilename = "resources/DiceWords.txt";
 
     private boolean gameRunning;
@@ -34,6 +34,8 @@ public class BoggleController {
     private int score;
 
     private List<String> guessWordList;
+
+    private int gridSide = 4;
 
     public BoggleController(BoggleView view) {
         this.view = view;
@@ -54,9 +56,9 @@ public class BoggleController {
             @Override
             public void handle(ActionEvent event) {
                 view.hideTip();
-                String text = view.getTextFieldString().toUpperCase();
+                String text = view.getTextFieldString();
                 if(!guessWordList.contains(text)){
-                    if (!allWords.contains(text) || !containsWords(text)) {
+                    if (!allWords.contains(text.toLowerCase()) || !containsWords(text.toUpperCase())) {
                         view.showTip();
                     }else {
                         view.appendTextToTextArea(text);
@@ -77,7 +79,18 @@ public class BoggleController {
         view.addResetGameButtonHandler(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                gridList = diceGenerate.shakeDice();
+                System.out.println(view.getChoichBoxValue());
+
+                if("4 * 4".equals(view.getChoichBoxValue())){
+                    gridList = diceGenerate.shakeDice(16);
+                    view.initDiceGrid(4);
+                    gridSide = 4;
+                }else {
+                    gridList = diceGenerate.shakeDice(25);
+                    view.initDiceGrid(5);
+                    gridSide = 5;
+                }
+                addDiceButtonAction();
                 view.setGridDiceValue(gridList);
                 view.init();
                 timer.restart();
@@ -87,30 +100,6 @@ public class BoggleController {
                 }
                 score = 0;
                 guessWordList = new ArrayList<String>();
-            }
-        });
-
-        view.addDiceGridHandler(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if(gameRunning){
-                    DiceButton button = (DiceButton) event.getSource();
-                    view.appendToTextField(button.getText());
-                    button.setAvailable(false);
-                    view.setDicePaneDisable(true);
-
-                    int row = button.getRow();
-                    int column = button.getColumn();
-                    for (int i = row - 1; i <= row + 1; i++) {
-                        if (i >= 0 && i < 4) {
-                            for (int j = column - 1; j <= column + 1; j++) {
-                                if (j >= 0 && j < 4) {
-                                    view.enabledDiceGridButton(i,j);
-                                }
-                            }
-                        }
-                    }
-                }
             }
         });
     }
@@ -129,6 +118,32 @@ public class BoggleController {
             }
         }
         return true;
+    }
+
+    private void addDiceButtonAction(){
+        view.addDiceGridHandler(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(gameRunning){
+                    DiceButton button = (DiceButton) event.getSource();
+                    view.appendToTextField(button.getText());
+                    button.setAvailable(false);
+                    view.setDicePaneDisable(true);
+
+                    int row = button.getRow();
+                    int column = button.getColumn();
+                    for (int i = row - 1; i <= row + 1; i++) {
+                        if (i >= 0 && i < gridSide) {
+                            for (int j = column - 1; j <= column + 1; j++) {
+                                if (j >= 0 && j < gridSide) {
+                                    view.enabledDiceGridButton(i,j);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**

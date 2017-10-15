@@ -8,7 +8,7 @@ import java.util.Random;
  * @author Adrian
  */
 public class DiceGenerate {
-	private final int NUMBER_OF_DICE = 16;
+	private final int NUMBER_OF_DICE = 25;
 	private final int NUMBER_OF_SIDES = 6;
 	
 	// contains data for each side of each die
@@ -38,9 +38,9 @@ public class DiceGenerate {
 	 * 
 	 * @return an list containing a random letter from each die in random order
 	 */
-	public List<String> shakeDice() {
+	public List<String> shakeDice(int size) {
 		List<String> temp = new ArrayList<String>();
-		for (int i = 0; i < NUMBER_OF_DICE; i++) {
+		for (int i = 0; i < size; i++) {
 			temp.add(dice.get(i).getLetter());
 		}
 		long seed = System.nanoTime();

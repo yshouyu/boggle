@@ -1,4 +1,4 @@
-# The Gmae of Boggle V1.2
+# The Gmae of Boggle V4 Final
 ## About
 This program is designed, wrote and tested by Shouyu Yang.
 
